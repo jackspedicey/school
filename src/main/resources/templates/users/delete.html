@@ -1,0 +1,28 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="card-body">
+    <div class="form-horizontal">
+        <form id = "form" role="form" th:action="@{users/delete}" method="post" th:object="${users}">
+            <div class="row">
+                <input type="hidden" th:field="${users.id}" id="id"></input>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="control-label" for="request">User Id</label>
+                        <input type="text" class="form-control" id="userId" th:field="${users.userId}" disabled>
+                    </div>
+                </div>
+     
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="control-label" for="response">Role</label>
+                        <input type="text" class="form-control" id="role" th:field="${users.role}" disabled>
+                    </div>
+                </div> 
+            </div>
+            <!-- <div class="row">
+                <div class="col-lg-6">
+                    <button id="formSubmit" hidden type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </div> -->
+        </form>
+    </div>
+</div>

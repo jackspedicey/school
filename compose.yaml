@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-school-db
+    environment:
+      POSTGRES_DB: schooldb
+      POSTGRES_USER: zaka
+      POSTGRES_PASSWORD: zaka
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

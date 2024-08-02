@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <title>Free School| User Management</title>
+    <!-- jQuery -->
+    <script th:src="@{plugins/jquery/jquery.min.js}"></script>
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let data = /*[[${list}]]*/ "Test";
+        data = JSON.parse(data)
+        /*]]>*/
+
+        let columns = []
+        let rows = []
+
+        const letterIt = str => {
+            let result = str.replace(/([A-Z])/g, " $1");
+            return result.charAt(0).toUpperCase() + result.slice(1);
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            if (i === 0) {
+                columns = columns.concat($.map(data[i], (value, label) => {
+                    return {
+                        'title': letterIt(label)
+                    }
+                }))
+                columns = columns.concat({'title': 'Action'})
+            }
+
+            let row = []
+            for (let d in data[i]) {
+                row.push(data[i][d])
+            }
+
+            // add view button
+            row.push(
+                '<button style="margin:1px;" onclick="view(this.value)" value="' + data[i]['id'] + '" class="btn btn-primary">View</button>' + 
+                '<button style="margin:1px;" onclick="edit(this.value)" value="' + data[i]['id'] + '" class="btn btn-secondary">Edit</button>' + 
+                '<button style="margin:1px;" onclick="del(this.value)" value="' + data[i]['id'] + '" class="btn btn-danger">Delete</button>'
+            )
+            rows.push(row)
+        }
+    </script>
+    <script th:inline="javascript" th:src="@{dist/js/pages/users/index.js}"></script>
+</head>
+<body>
+<div layout:fragment="header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">User Management</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">User Management</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <button class="btn btn-primary float-right" onclick="add()" >Add New User</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert" th:if="${message} != null">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong  th:text="${message}"></strong>
+                        </div>
+                        <div class="alert alert-danger" role="alert" th:if="${error} != null">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="alert-heading">ERROR!</h4>
+                            <p th:each="err : ${error}" th:text="${err}"></p>
+                            <hr>
+                            <p class="mb-0">Please Read the Error Message :).</p>
+                        </div>
+                        <div class="alert alert-success" role="alert" th:if="${success} != null">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong  th:text="${success}"></strong>
+                        </div>
+                        <table id="dt-users" class="table table-striped"></table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+    <div class="modal fade" id="modal-detail-api">
+        <div class="modal-dialog" style="min-width: 40%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--gonna fill this space-->
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="saveChanges" form="form" type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <div class="modal fade" id="modal-view">
+        <div class="modal-dialog" style="min-width: 40%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--gonna fill this space-->
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+</body>
+</html>

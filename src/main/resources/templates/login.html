@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Free School | Log in</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="dist/css/adminlte.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <style>
+        .additional-fields {
+          display: none; /* Hide additional fields by default */
+        }
+    </style>
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <img src="dist/img/logo.png" alt="FWD Logo" style="width: 50%; height: auto;">
+    </div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <!-- Login Form -->
+            <form id="authForm" th:action="@{/login}" method="POST">
+                <p id="formTitle" class="login-box-msg">Sign in to start your session</p>
+                <div th:if="${param.error}">
+                    <div class="callout callout-danger bg-red">
+                        <p>Username or password invalid!</p>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Registration Fields -->
+                <div id="additionalFields" class="additional-fields">
+                    <div class="input-group mb-3">
+                        <input type="text" name="firstName" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="lastName" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="address" class="form-control" placeholder="Address">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="birthDate" class="form-control" placeholder="Birth Date">
+                    </div>
+                    <div class="input-group mb-3">
+                        <select name="role" class="form-control">
+                            <option value="STUDENT">Student</option>
+                            <option value="TEACHER">Teacher</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3" id="hiredDateField" style="display: none;">
+                        <input type="text" name="hiredDate" class="form-control" placeholder="Hired Date">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8">
+                        <!-- Optionally add a checkbox for "Remember Me" -->
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Buttons to toggle between login and registration -->
+            <div class="text-center mt-3">
+                <button id="loginButton" class="btn btn-primary">Login</button>
+                <button id="registerButton" class="btn btn-secondary">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#loginButton').click(function() {
+            $('#additionalFields').hide();
+            $('#formTitle').text('Sign in to start your session');
+            $('#authForm').attr('action', '/login');
+        });
+
+        $('#registerButton').click(function() {
+            $('#additionalFields').show();
+            $('#formTitle').text('Register to start your session');
+            $('#authForm').attr('action', '/register');
+        });
+
+        // Handle dynamic form field updates based on role selection
+        $('select[name="role"]').change(function() {
+            if ($(this).val() === 'TEACHER') {
+                $('#hiredDateField').show(); // Show hired date for teachers
+            } else {
+                $('#hiredDateField').hide(); // Hide hired date for students
+            }
+        });
+
+        // Optional: Handle form validation
+        $('#authForm').on('submit', function(event) {
+            var username = $('input[name="username"]').val().trim();
+            var password = $('input[name="password"]').val().trim();
+
+            if (!username || !password) {
+                event.preventDefault();
+                alert('Username and Password are required.');
+            }
+        });
+    });
+</script>
+</body>
+</html>

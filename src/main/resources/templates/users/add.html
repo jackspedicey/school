@@ -1,0 +1,31 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="card-body">
+    <div class="form-horizontal">
+        <form id = "form" role="form" th:action="@{users/save}" method="post" th:object="${users}">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="control-label" for="request">User Id</label>
+                        <input required type="text" class="form-control" id="userId" th:field="${users.userId}">
+                    </div>
+                </div>
+     
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="control-label" for="response">Role</label>
+                        <select class="form-control" id="role" th:field="${users.role}">
+                            <option value="" default>-please select an option-</option>
+                            <option value="teacher">teacher</option>
+                            <option value="student">student</option>
+                        </select>
+                    </div>
+                </div> 
+            </div>
+            <!-- <div class="row">
+                <div class="col-lg-6">
+                    <button id="formSubmit" hidden type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div> -->
+        </form>
+    </div>
+</div>
