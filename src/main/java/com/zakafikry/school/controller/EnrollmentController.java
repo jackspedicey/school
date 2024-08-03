@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/enrollment")
 public class EnrollmentController {
+
     @GetMapping("")
     public String index(Model model, HttpServletRequest request) {
         model.addAttribute("currentPath", request.getRequestURI());
         return "enrollment/index";
     }
+
 }

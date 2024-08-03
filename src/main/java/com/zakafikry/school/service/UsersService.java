@@ -50,26 +50,37 @@ public class UsersService {
         user.setRole("ROLE_" + userRegistrationDto.getRole());
         userRepository.save(user);
 
-        if ("ROLE_TEACHER".equalsIgnoreCase(userRegistrationDto.getRole())) {
-            Teachers teacher = new Teachers();
-            teacher.setFirstName(userRegistrationDto.getFirstName());
-            teacher.setLastName(userRegistrationDto.getLastName());
-            teacher.setUsername(userRegistrationDto.getUsername());
-            teacher.setEmail(userRegistrationDto.getEmail());
-            teacher.setAddress(userRegistrationDto.getAddress());
-            teacher.setBirthDate(userRegistrationDto.getBirthDate());
-            teacher.setHiredDate(String.valueOf(new Date()));
+        if ("TEACHER".equalsIgnoreCase(userRegistrationDto.getRole())) {
+            Teachers teacher = getTeacher(userRegistrationDto);
             teacherRepository.save(teacher);
-        } else if ("ROLE_STUDENT".equalsIgnoreCase(userRegistrationDto.getRole())) {
-            Students student = new Students();
-            student.setFirstName(userRegistrationDto.getFirstName());
-            student.setLastName(userRegistrationDto.getLastName());
-            student.setUsername(userRegistrationDto.getUsername());
-            student.setEmail(userRegistrationDto.getEmail());
-            student.setAddress(userRegistrationDto.getAddress());
-            student.setBirthDate(userRegistrationDto.getBirthDate());
+        } else if ("STUDENT".equalsIgnoreCase(userRegistrationDto.getRole())) {
+            Students student = getStudent(userRegistrationDto);
             studentRepository.save(student);
         }
+    }
+
+    private static Teachers getTeacher(UserRegistrationDto userRegistrationDto) {
+        Teachers teacher = new Teachers();
+        teacher.setFirstName(userRegistrationDto.getFirstName());
+        teacher.setLastName(userRegistrationDto.getLastName());
+        teacher.setUsername(userRegistrationDto.getUsername());
+        teacher.setEmail(userRegistrationDto.getEmail());
+        teacher.setAddress(userRegistrationDto.getAddress());
+        teacher.setBirthDate(userRegistrationDto.getBirthDate());
+        teacher.setHiredDate(String.valueOf(new Date()));
+        return teacher;
+    }
+
+    private static Students getStudent(UserRegistrationDto userRegistrationDto) {
+        Students student = new Students();
+        student.setFirstName(userRegistrationDto.getFirstName());
+        student.setLastName(userRegistrationDto.getLastName());
+        student.setUsername(userRegistrationDto.getUsername());
+        student.setEmail(userRegistrationDto.getEmail());
+        student.setAddress(userRegistrationDto.getAddress());
+        student.setBirthDate(userRegistrationDto.getBirthDate());
+        student.setRegisterDate(String.valueOf(new Date()));
+        return student;
     }
 
     public boolean userExists(String username) {

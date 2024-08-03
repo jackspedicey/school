@@ -11,7 +11,7 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>FWD Insurance</title>
+    <title>Free School</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
@@ -72,30 +72,30 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
-                    <li sec:authorize="hasAnyRole('admin', 'ROLE_TEACHER')" class="nav-item has-treeview"
-                        th:classappend="${currentPath.contains('courses') ? 'menu-open':''}">
+                    <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')" class="nav-item has-treeview"
+                        th:classappend="${currentPath.contains('course') ? 'menu-open':''}">
                         <a href="#" class="nav-link"
-                           th:classappend="${currentPath.contains('courses') ? 'active':''}">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                           th:classappend="${currentPath.contains('course') ? 'active':''}">
+                            <i class="nav-icon fas "></i>
                             <p>
-                                courses
+                                Courses
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="/courses" class="nav-link" th:classappend="${currentPath == '/courses' ? 'active':''}">
-                                    <i class="fas fa-upload nav-icon"></i>
-                                    <p>Upload</p>
+                                <a href="/course" class="nav-link" th:classappend="${currentPath == '/course' ? 'active':''}">
+                                    <i class="fas nav-icon"></i>
+                                    <p>Manage your course</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li sec:authorize="hasAnyRole('admin', 'ROLE_STUDENT')" class="nav-item has-treeview"
+                    <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT')" class="nav-item has-treeview"
                         th:classappend="${currentPath.contains('enrollment') ? 'menu-open':''}">
                         <a href="#" class="nav-link"
                            th:classappend="${currentPath.contains('enrollment') ? 'active':''}">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                            <i class="nav-icon fas "></i>
                             <p>
                                 Enrollment
                                 <i class="right fas fa-angle-left"></i>
@@ -104,17 +104,17 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="/enrollment" class="nav-link" th:classappend="${currentPath == '/enrollment' ? 'active':''}">
-                                    <i class="fas fa-upload nav-icon"></i>
-                                    <p>Upload</p>
+                                    <i class="fas nav-icon"></i>
+                                    <p>let's enroll</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li sec:authorize="hasAnyRole('admin', 'ROLE_TEACHER')" class="nav-item has-treeview"
+                    <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')" class="nav-item has-treeview"
                         th:classappend="${currentPath.contains('teacher') ? 'menu-open':''}">
                         <a href="#" class="nav-link"
                            th:classappend="${currentPath.contains('teacher') ? 'active':''}">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                            <i class="nav-icon fas "></i>
                             <p>
                                 Teacher
                                 <i class="right fas fa-angle-left"></i>
@@ -123,17 +123,17 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="/teacher" class="nav-link" th:classappend="${currentPath == '/teacher' ? 'active':''}">
-                                    <i class="fas fa-upload nav-icon"></i>
-                                    <p>Upload</p>
+                                    <i class="fas nav-icon"></i>
+                                    <p>your profile</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li sec:authorize="hasAnyRole('admin', 'ROLE_STUDENT')" class="nav-item has-treeview"
+                    <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT')" class="nav-item has-treeview"
                         th:classappend="${currentPath.contains('student') ? 'menu-open':''}">
                         <a href="#" class="nav-link"
                            th:classappend="${currentPath.contains('student') ? 'active':''}">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                            <i class="nav-icon fas "></i>
                             <p>
                                 Student
                                 <i class="right fas fa-angle-left"></i>
@@ -142,18 +142,18 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="/student" class="nav-link" th:classappend="${currentPath == '/student' ? 'active':''}">
-                                    <i class="fas fa-upload nav-icon"></i>
-                                    <p>Upload</p>
+                                    <i class="fas nav-icon"></i>
+                                    <p>your profile</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
 
-                    <li sec:authorize="hasRole('admin')" class="nav-item has-treeview"
+                    <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-treeview"
                         th:classappend="${currentPath.contains('user') ? 'menu-open':''}">
                         <a href="#" class="nav-link"
                            th:classappend="${currentPath.contains('user') ? 'active':''}">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                            <i class="nav-icon fas "></i>
                             <p>
                                 Admin
                                 <i class="right fas fa-angle-left"></i>
@@ -163,7 +163,7 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
                             <li class="nav-item">
                                 <a href="/user" class="nav-link"
                                    th:classappend="${currentPath == '/user' ? 'active':''}">
-                                    <i class="fas fa-upload nav-icon"></i>
+                                    <i class="fas nav-icon"></i>
                                     <p>User Management</p>
                                 </a>
                             </li>
@@ -207,8 +207,8 @@ scratch. This dataTable gets rid of all links and provides the needed markup onl
     <!-- Main Footer -->
     <footer class="main-footer">
         <!-- To the right -->
-        <div th:if="${currentPath.contains('courses')}" class="float-right d-none d-sm-inline">
-            courses CMS
+        <div th:if="${currentPath.contains('course')}" class="float-right d-none d-sm-inline">
+            course CMS
         </div>
         <div th:if="${currentPath.contains('enrollment')}" class="float-right d-none d-sm-inline">
             enrollment CMS

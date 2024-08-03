@@ -19,4 +19,5 @@ public class Students {
     private String email;
     private String address;
     private String birthDate;
+    private String registeredDate;
 }

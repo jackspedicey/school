@@ -9,19 +9,19 @@
     <!-- DataTables -->
     <link rel="stylesheet" th:href="@{plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
     <link rel="stylesheet" th:href="@{plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
-    <script th:inline="javascript" th:src="@{dist/js/pages/delivery/index.js}"></script>
+    <script th:inline="javascript" th:src="@{dist/js/pages/enrollment/index.js}"></script>
 </head>
 <body>
 <div layout:fragment="header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Document Delivery</h1>
+                <h1 class="m-0 text-dark">Enrollment</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item active">Document Delivery</li>
+                    <li class="breadcrumb-item active">Enrollment</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -32,44 +32,6 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="alert alert-warning" role="alert" th:if="${message} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong  th:text="${message}"></strong>
-                        </div>
-                        <div class="alert alert-danger" role="alert" th:if="${error} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="alert-heading">ERROR!</h4>
-                            <p th:each="err : ${error}" th:text="${err}"></p>
-                            <hr>
-                            <p class="mb-0">Please Read the Error Message :).</p>
-                        </div>
-                        <div class="alert alert-success" role="alert" th:if="${success} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong  th:text="${success}"></strong>
-                        </div>
-                        <form action="/delivery/upload" method="post" enctype="multipart/form-data" id="formUpload">
-                            <label for="uploadFile">Upload File. <a href="/delivery/download/format" target="_blank">Download Format</a></label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <label class="custom-file-label" for="uploadFile">Choose file</label>
-                                    <input type="file" name="uploadFile" class="custom-file-input" id="uploadFile"/>
-                                </div>
-                                <div class="input-group-append">
-                                    <button id="submitUpload" type="submit" class="input-group-text primary">Upload</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Filter</h3>
@@ -78,55 +40,37 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="resiNo">No Resi</label>
-                                    <input type="text" maxlength="16" class="form-control" id="resiNo" placeholder="No Resi">
+                                    <label for="courseName">Course Name</label>
+                                    <input type="text" maxlength="16" class="form-control" id="courseName" placeholder="Course Name">
                                 </div>
                                 <div class="form-group">
-                                    <label for="agentId">Agent Code</label>
-                                    <input type="text" class="form-control" id="agentId" placeholder="Agent Code">
-                                </div>
-                                <div class="form-group">
-                                    <label for="docType">Doc Type</label>
-                                    <input type="text" class="form-control" id="docType" placeholder="Doc Type">
+                                    <label for="courseLevel">Course Level</label>
+                                    <select id="courseLevel" class="form-control">
+                                        <option value="1">Beginner</option>
+                                        <option value="2">Intermediate</option>
+                                        <option value="3">Expert</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="policyNumber">No Polis</label>
-                                    <input type="text" class="form-control" id="policyNumber" placeholder="No Polis">
+                                    <label for="courseDesc">Course Description</label>
+                                    <input type="text" class="form-control" id="courseDesc" placeholder="Course Description">
                                 </div>
                                 <div class="form-group">
-                                    <label for="expedition">Kurir</label>
-                                    <input type="text" class="form-control" id="expedition" placeholder="Kurir">
+                                    <label for="teacher">Teacher</label>
+                                    <input type="text" maxlength="16" class="form-control" id="teacher" placeholder="Teacher">
                                 </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <input type="text" class="form-control" id="status" placeholder="Status">
-                                </div>
-                                <!-- <div class="row">
-                                    <div class="col-md-3">
-                                        <label for="uploadFrom">Upload From</label>
-                                        <input type="date" class="form-control" id="uploadFrom">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="uploadTo">Upload To</label>
-                                        <input type="date" class="form-control" id="uploadTo">
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
-                        <button class="btn btn-primary" style="margin: 2px" onclick="filter()">Find</button>
-                        <button class="btn btn-warning" style="margin: 2px" onclick="resetField()">Clear</button>
-                        <!-- <button class="btn btn-dark" style="margin: 2px" onclick="exportExcel()">Download</button> -->
-                    </div>
                 </div>
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Uploaded Record</h3>
+                        <h3 class="card-title">Course List</h3>
                     </div>
                     <div class="card-body">
-                        <table id="dt-policy" class="table table-striped"></table>
+                        <table id="dt-enrollment" class="table table-striped"></table>
                     </div>
                     <!-- /.card-body -->
                 </div>

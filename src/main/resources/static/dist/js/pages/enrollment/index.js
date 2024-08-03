@@ -1,5 +1,5 @@
 const loadDataTable = query => {
-    $('#dt-policy').DataTable({
+    $('#dt-enrollment').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -13,21 +13,16 @@ const loadDataTable = query => {
         },
         "columnDefs": [
             {"targets": -1,
-            "searchable": false,
-            "orderable": false
+                "searchable": false,
+                "orderable": false
             }
         ],
         "columns": [
-            {"title": "No Polis", "data": "policyNumber"},
-            {"title": "Agent Code", "data": "agentId"},
-            {"title": "Doc Type", "data": "docType"},
-            {"title": "Send Date", "data": "strSendDate"},
-            {"title": "No Resi", "data": "resiNo"},
-            {"title": "Kurir", "data": "expedition"},
-            {"title": "Status", "data": "status"},
-            {"title": "Notes", "data": "notes"},
-            {"title": "Uploader", "data": "createdBy"},
-            {"title": "Upload Date", "data": "strCreatedTime"}
+            {"title": "Course Id", "data": "id"},
+            {"title": "Course Name", "data": "courseName"},
+            {"title": "Course Description", "data": "courseDesc"},
+            {"title": "Course Level", "data": "strCourseLevel"},
+            {"title": "Lecturer", "data": "teacherName"},
         ],
         "responsive": true,
         "autoWidth": false,
@@ -35,12 +30,7 @@ const loadDataTable = query => {
 }
 
 const validation = () => {
-    let uploadFrom = $('#uploadFrom').val();
-    let uploadTo = $('#uploadTo').val();
 
-    if ((uploadFrom && !uploadTo) || (!uploadFrom && uploadTo)) {
-        throw alert('please fill both date')
-    }
 }
 
 const reloadDatatable = (query) => {
@@ -107,14 +97,10 @@ const filter = () => {
 }
 
 const resetField = () => {
-    $('#policyNumber').val("");
-    $('#agentId').val("");
-    $('#docType').val("");
-    $('#resiNo').val("");
-    $('#expedition').val("");
-    $('#uploadFrom').val("");
-    $('#uploadTo').val("");
-    $('#status').val("");
+    $('#courseName').val("");
+    $('#courseDesc').val("");
+    $('#courseLevel').val("");
+    $('#teacher').val("");
 }
 
 let xlsMimeType = 'data:application/vnd.ms-excel';
@@ -148,8 +134,4 @@ const exportExcel = () => {
 
 $(document).ready(function () {
     loadDataTable('');
-    $('#uploadFile').on("change",function() {
-        const name = $('#uploadFile')[0].files[0].name;
-        $(this).prev('label').text(name);
-    });
 });

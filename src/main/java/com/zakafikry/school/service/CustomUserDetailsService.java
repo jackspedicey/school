@@ -22,18 +22,19 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
+        Optional<Users> optUser = userRepository.findByUsername(username);
+        if (optUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        User x =  new User(
-                user.get().getUsername(),
-                user.get().getPassword(),
-                Arrays.stream(user.get().getRole().split(","))
+        User userDetails =  new User(
+                optUser.get().getUsername(),
+                optUser.get().getPassword(),
+                Arrays.stream(optUser.get().getRole().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList())
         );
-        System.out.println("loadUserByUsername: " + x.toString());
-        return x;
+        System.out.println("loadUserByUsername: " + userDetails.toString());
+        return userDetails;
     }
+
 }

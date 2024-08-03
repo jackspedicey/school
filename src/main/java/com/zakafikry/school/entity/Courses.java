@@ -1,9 +1,6 @@
 package com.zakafikry.school.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -14,6 +11,11 @@ public class Courses {
     private Long id;
     private String courseName;
     private String courseDesc;
-    private Long teacherId;
+    private String courseLevel;
+    //private Long teacherId;
     private String schedule;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teachers teacher;
 }

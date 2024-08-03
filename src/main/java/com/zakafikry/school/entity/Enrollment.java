@@ -1,9 +1,6 @@
 package com.zakafikry.school.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,7 +11,13 @@ public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long studentId;
-    private Long courseId;
     private Date enrolledDate;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Students student;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Courses course;
 }
