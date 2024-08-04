@@ -1,5 +1,7 @@
 package com.zakafikry.school.service;
 
+import com.zakafikry.school.dto.DataTablesInput;
+import com.zakafikry.school.dto.DataTablesOutput;
 import com.zakafikry.school.dto.EnrollmentDTO;
 import com.zakafikry.school.entity.Courses;
 import com.zakafikry.school.entity.Enrollment;
@@ -8,10 +10,13 @@ import com.zakafikry.school.repository.CoursesRepository;
 import com.zakafikry.school.repository.EnrollmentRepository;
 import com.zakafikry.school.repository.StudentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentService {
@@ -25,9 +30,12 @@ public class EnrollmentService {
     @Autowired
     private CoursesRepository coursesRepository;
 
-    public void enrollStudent (String courseId, String studentId) {
-        Optional<Students> optStudent = studentsRepository.findById(Long.valueOf(studentId));
-        Optional<Courses> optCourse = coursesRepository.findById(Long.valueOf(courseId));
+    @Autowired
+    private DataTablesService dataTablesService;
+
+    public void enrollStudent (Long courseId, Long studentId) {
+        Optional<Students> optStudent = studentsRepository.findById(studentId);
+        Optional<Courses> optCourse = coursesRepository.findById(courseId);
         if (optStudent.isPresent() && optCourse.isPresent()) {
             Students student = optStudent.get();
             Courses course = optCourse.get();
@@ -39,14 +47,32 @@ public class EnrollmentService {
         }
     }
 
-    public EnrollmentDTO convertToDTO(Enrollment enrollment) {
-        EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
-        enrollmentDTO.setCourseName(enrollment.getCourse().getCourseName());
-        enrollmentDTO.setCourseDesc(enrollment.getCourse().getCourseDesc());
-        enrollmentDTO.setCourseLevel(enrollment.getCourse().getCourseLevel());
-        enrollmentDTO.setEnrolledDate(String.valueOf(enrollment.getEnrolledDate()));
-        enrollmentDTO.setStudentName(enrollment.getStudent().getFirstName() + " " + enrollment.getStudent().getLastName());
+    public DataTablesOutput<EnrollmentDTO> getEnrollmentDataTable(DataTablesInput input, Specification<Enrollment> spec) {
+        DataTablesOutput<Enrollment> output = dataTablesService.getDataTableOutput(input, enrollmentRepository, enrollmentRepository, spec);
 
-        return enrollmentDTO;
+        List<EnrollmentDTO> dtos = output.getData().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        DataTablesOutput<EnrollmentDTO> dtoOutput = new DataTablesOutput<>();
+        dtoOutput.setDraw(output.getDraw());
+        dtoOutput.setRecordsTotal(output.getRecordsTotal());
+        dtoOutput.setRecordsFiltered(output.getRecordsFiltered());
+        dtoOutput.setData(dtos);
+
+        return dtoOutput;
+    }
+
+    public EnrollmentDTO convertToDTO(Enrollment enrollment) {
+        EnrollmentDTO dto = new EnrollmentDTO();
+        dto.setCourseName(enrollment.getCourse().getName());
+        dto.setCourseDesc(enrollment.getCourse().getDescription());
+        dto.setCourseLevel(enrollment.getCourse().getLevel());
+        dto.setSchedule(enrollment.getCourse().getSchedule());
+        dto.setEnrolledDate(String.valueOf(enrollment.getEnrolledDate()));
+        dto.setStudentName(enrollment.getStudent().getFirstName() + " " + enrollment.getStudent().getLastName());
+        dto.setTeacherName(enrollment.getCourse().getTeacher().getFirstName() + " " + enrollment.getCourse().getTeacher().getLastName());
+        dto.setCourseId(String.valueOf(enrollment.getCourse().getId()));
+        return dto;
     }
 }

@@ -10,5 +10,8 @@ public class EnrollmentDTO {
     private String schedule;
     private String username;
     private String studentName;
+    private String teacherName;
     private String enrolledDate;
+    private String courseId;
+    private String enrollmentId;
 }

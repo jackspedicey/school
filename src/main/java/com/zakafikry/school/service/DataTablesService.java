@@ -18,8 +18,7 @@ public class DataTablesService {
                                                       JpaRepository<T, ?> repository,
                                                       JpaSpecificationExecutor<T> specificationExecutor,
                                                       Specification<T> spec) {
-        Sort sort = Sort.by(input.getSortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
-                input.getSortColumn());
+        Sort sort = Sort.by(input.getSortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, input.getSortColumn());
 
         Pageable pageable = PageRequest.of(input.getStart() / input.getLength(),
                 input.getLength(),

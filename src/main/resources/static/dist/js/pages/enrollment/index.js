@@ -1,137 +1,101 @@
-const loadDataTable = query => {
-    $('#dt-enrollment').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/rest/datatable/upload" + query,
-            "type": "POST",
-            "dataType": "json",
-            "contentType": "application/json",
-            "data": function (d) {
-                return JSON.stringify(d);
+let enrollmentTable;
+
+const loadDataTable = () => {
+    enrollmentTable = $('#dt-enrollment').DataTable({
+        serverSide: true,
+        ajax: {
+            url: '/api/course/datatable',
+            type: 'POST',
+            contentType: 'application/json',
+            data: function(d) {
+                return JSON.stringify({
+                    draw: d.draw,
+                    start: d.start,
+                    length: d.length,
+                    searchValue: d.search.value,
+                    sortColumn: d.columns[d.order[0].column].data,
+                    sortDirection: d.order[0].dir
+                });
             }
         },
-        "columnDefs": [
-            {"targets": -1,
-                "searchable": false,
-                "orderable": false
+        columns: [
+            { title: 'Course Name', data: 'name' },
+            { title: 'Description', data: 'description' },
+            {
+                title: 'Level',
+                data: 'level',
+                render: function(data, type, row) {
+                    switch (data) {
+                        case "1": return 'Beginner';
+                        case "2": return 'Intermediate';
+                        case "3": return 'Expert';
+                        default: return '';
+                    }
+                }
+            },
+            { title: 'Schedule', data: 'schedule' },
+            { title: 'Lecturer', data: 'teacherName' },
+            {
+                title: 'Action',
+                data: null,
+                render: function(data, type, row) {
+                    return '<button class="btn btn-info btn-sm detail-btn" data-id="' + row.id + '">Detail</button>';
+                }
             }
         ],
-        "columns": [
-            {"title": "Course Id", "data": "id"},
-            {"title": "Course Name", "data": "courseName"},
-            {"title": "Course Description", "data": "courseDesc"},
-            {"title": "Course Level", "data": "strCourseLevel"},
-            {"title": "Lecturer", "data": "teacherName"},
-        ],
-        "responsive": true,
-        "autoWidth": false,
+        responsive: true,
+        autoWidth: false
     });
-}
+};
 
-const validation = () => {
+const showCourseDetails = (courseId) => {
+    $.ajax({
+        url: '/api/course/' + courseId,
+        type: 'GET',
+        success: function(data) {
+            let detailsHtml = `
+                <h5>${data.name}</h5>
+                <p><strong>Description:</strong> ${data.description}</p>
+                <p><strong>Level:</strong> ${data.level}</p>
+                <p><strong>Schedule:</strong> ${data.schedule}</p>
+                <p><strong>Lecturer:</strong> ${data.teacherName}</p>
+            `;
+            $('#course-details').html(detailsHtml);
+            $('#enroll-button').data('id', courseId);
+            $('#modal-course-detail').modal('show');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching course details:', error);
+        }
+    });
+};
 
-}
-
-const reloadDatatable = (query) => {
-    validation();
-    $('#dt-policy').DataTable().destroy();
-    loadDataTable(query);
-}
-
-const checkQuery = (query) => {
-    return query.length > 0 ? '&' : '?';
-}
-
-const getQuery = () => {
-    let policyNumber = $('#policyNumber').val();
-    let agentId = $('#agentId').val();
-    let docType = $('#docType').val();
-    let resiNo = $('#resiNo').val();
-    let expedition = $('#expedition').val();
-    let status = $('#status').val();
-    let uploadFrom = $('#uploadFrom').val();
-    let uploadTo = $('#uploadTo').val();
-
-    let query = ''
-
-    if (policyNumber) {
-        query+=checkQuery(query) + "policyNumber="+policyNumber;
-    }
-
-    if (agentId) {
-        query+=checkQuery(query) + "agentId="+agentId;
-    }
-
-    if (docType) {
-        query+=checkQuery(query) + "docType="+docType;
-    }
-
-    if (resiNo) {
-        query+=checkQuery(query) + "resiNo="+resiNo;
-    }
-
-    if (expedition) {
-        query+=checkQuery(query) + "expedition="+expedition;
-    }
-
-    if (uploadFrom) {
-        query+=checkQuery(query) + "from="+uploadFrom;
-    }
-
-    if (uploadTo) {
-        query+=checkQuery(query) + "to="+uploadTo;
-    }
-
-    if (status) {
-        query+=checkQuery(query) + "status="+status;
-    }
-
-    console.log('query: ' + query)
-
-    return query;
-}
-
-const filter = () => {
-    reloadDatatable(getQuery());
-}
-
-const resetField = () => {
-    $('#courseName').val("");
-    $('#courseDesc').val("");
-    $('#courseLevel').val("");
-    $('#teacher').val("");
-}
-
-let xlsMimeType = 'data:application/vnd.ms-excel';
-let xlsxMimeType = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-const exportExcel = () => {
-    validation();
-    let query = getQuery();
-    if (query) {
-        $.ajax({
-            url : 'rest/download/excel' + query,
-            type : 'GET',
-            headers: {'Content-Type': 'application/vnd.ms-excel'},
-            responseType: 'arraybuffer',
-            success : function(result) {
-                console.log(result)
-                let data = new Blob([result], { type: 'data:application/vnd.ms-excel' });
-                let url = URL.createObjectURL(data);
-
-                let hiddenElement = document.createElement('a');
-                hiddenElement.href = url;
-                hiddenElement.target = '_blank';
-                hiddenElement.download = "download" + '.xls';
-                hiddenElement.click();
-            }
-        });
-    } else {
-        alert('please filter before download')
-    }
-}
+const enrollCourse = (courseId) => {
+    $.ajax({
+        url: '/api/enrollment/' + courseId,
+        type: 'POST',
+        contentType: 'application/json',
+        success: function(response) {
+            alert('Successfully enrolled in the course!');
+            $('#modal-course-detail').modal('hide');
+            enrollmentTable.ajax.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Error enrolling in the course: ' + error);
+        }
+    });
+};
 
 $(document).ready(function () {
-    loadDataTable('');
+    loadDataTable();
+
+    $(document).on('click', '.detail-btn', function() {
+        let courseId = $(this).data('id');
+        showCourseDetails(courseId);
+    });
+
+    $('#enroll-button').click(function() {
+        let courseId = $(this).data('id');
+        enrollCourse(courseId);
+    });
 });

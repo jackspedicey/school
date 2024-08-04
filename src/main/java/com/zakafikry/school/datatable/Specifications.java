@@ -10,29 +10,29 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class Specifications {
     public static Specification<Courses> courseWithSearch(String search) {
-        return (root, query, cb) -> {
+        return (root, query, builder) -> {
             if (search == null || search.isEmpty()) {
-                return cb.conjunction();
+                return builder.conjunction();
             }
             String likePattern = "%" + search.toLowerCase() + "%";
 
-            // Join with Teacher entity
             Join<Courses, Teachers> teacherJoin = root.join("teacher", JoinType.LEFT);
 
-            return cb.or(
-                    cb.like(cb.lower(root.get("courseName")), likePattern),
-                    cb.like(cb.lower(root.get("courseDesc")), likePattern),
-                    cb.like(cb.lower(root.get("courseLevel")), likePattern),
-                    cb.like(cb.lower(root.get("schedule")), likePattern),
-                    cb.like(cb.lower(teacherJoin.get("name")), likePattern) // Search in teacher's name
+            return builder.or(
+                    builder.like(builder.lower(root.get("name")), likePattern),
+                    builder.like(builder.lower(root.get("description")), likePattern),
+                    builder.like(builder.lower(root.get("level")), likePattern),
+                    builder.like(builder.lower(root.get("schedule")), likePattern),
+                    builder.like(builder.lower(teacherJoin.get("lastName")), likePattern),
+                    builder.like(builder.lower(teacherJoin.get("firstName")), likePattern)
             );
         };
     }
 
     public static Specification<Enrollment> enrollmentWithSearch(String search) {
-        return (root, query, cb) -> {
+        return (root, query, builder) -> {
             if (search == null || search.isEmpty()) {
-                return cb.conjunction();
+                return builder.conjunction();
             }
             String likePattern = "%" + search.toLowerCase() + "%";
 
@@ -40,12 +40,16 @@ public class Specifications {
             Join<Enrollment, Courses> courseJoin = root.join("course", JoinType.LEFT);
             Join<Courses, Teachers> teacherJoin = courseJoin.join("teacher", JoinType.LEFT);
 
-            return cb.or(
-                    cb.like(cb.lower(studentJoin.get("name")), likePattern),
-                    cb.like(cb.lower(studentJoin.get("email")), likePattern),
-                    cb.like(cb.lower(courseJoin.get("courseName")), likePattern),
-                    cb.like(cb.lower(teacherJoin.get("name")), likePattern),
-                    cb.like(cb.function("DATE_FORMAT", String.class, root.get("enrolledDate"), cb.literal("%Y-%m-%d")), likePattern)
+            return builder.or(
+                    builder.like(builder.lower(courseJoin.get("name")), likePattern),
+                    builder.like(builder.lower(courseJoin.get("description")), likePattern),
+                    builder.like(builder.lower(courseJoin.get("level")), likePattern),
+                    builder.like(builder.lower(courseJoin.get("schedule")), likePattern),
+                    builder.like(builder.lower(studentJoin.get("firstName")), likePattern),
+                    builder.like(builder.lower(studentJoin.get("lastName")), likePattern),
+                    builder.like(builder.lower(teacherJoin.get("firstName")), likePattern),
+                    builder.like(builder.lower(teacherJoin.get("lastName")), likePattern),
+                    builder.like(builder.function("DATE_FORMAT", String.class, root.get("enrolledDate"), builder.literal("%Y-%m-%d")), likePattern)
             );
         };
     }

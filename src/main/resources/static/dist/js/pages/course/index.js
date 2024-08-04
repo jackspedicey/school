@@ -17,11 +17,11 @@ const loadDataTable = () => {
             }
         },
         columns: [
-            { title: 'name', data: 'courseName' },
-            { title: 'description', data: 'courseDesc' },
+            { title: 'Name', data: 'name' },
+            { title: 'Description', data: 'description' },
             {
-                title: 'level',
-                data: 'courseLevel',
+                title: 'Level',
+                data: 'level',
                 render: function(data, type, row) {
                     // Map numeric levels to descriptive labels
                     switch (data) {
@@ -36,7 +36,7 @@ const loadDataTable = () => {
                     }
                 }
             },
-            { title: 'schedule', data: 'schedule' },
+            { title: 'Schedule', data: 'schedule' },
             { title: 'Lecturer', data: 'teacherName' }
         ],
         responsive: true,
@@ -50,9 +50,9 @@ const validation = () => {
 
 function createCourse() {
     const courseData = {
-        courseName: document.getElementById('courseName').value,
-        courseLevel: document.getElementById('courseLevel').value,
-        courseDesc: document.getElementById('courseDesc').value,
+        name: document.getElementById('courseName').value,
+        level: document.getElementById('courseLevel').value,
+        description: document.getElementById('courseDesc').value,
         schedule: document.getElementById('schedule').value
     };
 

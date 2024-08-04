@@ -9,10 +9,9 @@ public class Courses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String courseName;
-    private String courseDesc;
-    private String courseLevel;
-    //private Long teacherId;
+    private String name;
+    private String description;
+    private String level;
     private String schedule;
 
     @ManyToOne

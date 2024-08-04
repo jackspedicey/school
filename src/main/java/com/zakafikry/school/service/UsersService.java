@@ -52,18 +52,21 @@ public class UsersService {
 
         if ("TEACHER".equalsIgnoreCase(userRegistrationDto.getRole())) {
             Teachers teacher = getTeacher(userRegistrationDto);
+            teacher.setUser(user);
             teacherRepository.save(teacher);
         } else if ("STUDENT".equalsIgnoreCase(userRegistrationDto.getRole())) {
             Students student = getStudent(userRegistrationDto);
+            student.setUser(user);
             studentRepository.save(student);
         }
     }
 
     private static Teachers getTeacher(UserRegistrationDto userRegistrationDto) {
         Teachers teacher = new Teachers();
+        teacher.setUsername(userRegistrationDto.getUsername());
         teacher.setFirstName(userRegistrationDto.getFirstName());
         teacher.setLastName(userRegistrationDto.getLastName());
-        teacher.setUsername(userRegistrationDto.getUsername());
+        teacher.setName(userRegistrationDto.getFirstName() + " " + userRegistrationDto.getLastName());
         teacher.setEmail(userRegistrationDto.getEmail());
         teacher.setAddress(userRegistrationDto.getAddress());
         teacher.setBirthDate(userRegistrationDto.getBirthDate());
@@ -73,13 +76,14 @@ public class UsersService {
 
     private static Students getStudent(UserRegistrationDto userRegistrationDto) {
         Students student = new Students();
+        student.setUsername(userRegistrationDto.getUsername());
         student.setFirstName(userRegistrationDto.getFirstName());
         student.setLastName(userRegistrationDto.getLastName());
-        student.setUsername(userRegistrationDto.getUsername());
+        student.setName(userRegistrationDto.getFirstName() + " " + userRegistrationDto.getLastName());
         student.setEmail(userRegistrationDto.getEmail());
         student.setAddress(userRegistrationDto.getAddress());
         student.setBirthDate(userRegistrationDto.getBirthDate());
-        student.setRegisterDate(String.valueOf(new Date()));
+        student.setRegisteredDate(String.valueOf(new Date()));
         return student;
     }
 

@@ -11,6 +11,7 @@ public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private Date enrolledDate;
 
     @ManyToOne

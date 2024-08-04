@@ -7,6 +7,7 @@ import com.zakafikry.school.entity.Courses;
 import com.zakafikry.school.entity.Teachers;
 import com.zakafikry.school.repository.CoursesRepository;
 import com.zakafikry.school.repository.TeachersRepository;
+import com.zakafikry.school.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class CoursesService {
     @Autowired
     private TeachersRepository teachersRepository;
 
+    @Autowired
+    UsersRepository usersRepository;
 
     @Autowired
     private DataTablesService dataTablesService;
@@ -33,16 +36,16 @@ public class CoursesService {
         if (optTeachers.isPresent()) {
             Teachers teachers = optTeachers.get();
             Courses courses = new Courses();
-            courses.setCourseName(c.getCourseName());
-            courses.setCourseDesc(c.getCourseDesc());
-            courses.setCourseLevel(c.getCourseLevel());
+            courses.setName(c.getName());
+            courses.setDescription(c.getDescription());
+            courses.setLevel(c.getLevel());
             courses.setSchedule(c.getSchedule());
             courses.setTeacher(teachers);
             courseRepository.save(courses);
         }
     }
 
-    public DataTablesOutput<CourseDTO> getCoursesForDataTable(DataTablesInput input, Specification<Courses> spec) {
+    public DataTablesOutput<CourseDTO> getCoursesDataTable(DataTablesInput input, Specification<Courses> spec) {
         DataTablesOutput<Courses> output = dataTablesService.getDataTableOutput(input, courseRepository, courseRepository, spec);
 
         List<CourseDTO> dtos = output.getData().stream()
@@ -58,14 +61,14 @@ public class CoursesService {
         return dtoOutput;
     }
 
-    private CourseDTO convertToDTO(Courses course) {
+    public CourseDTO convertToDTO(Courses course) {
         CourseDTO dto = new CourseDTO();
         dto.setId(String.valueOf(course.getId()));
-        dto.setCourseName(course.getCourseName());
-        dto.setCourseDesc(course.getCourseDesc());
-        dto.setCourseLevel(course.getCourseLevel());
+        dto.setName(course.getName());
+        dto.setDescription(course.getDescription());
+        dto.setLevel(course.getLevel());
         dto.setSchedule(course.getSchedule());
-        dto.setTeacherName(course.getTeacher() != null ? course.getTeacher().getFirstName() + course.getTeacher().getLastName() : null);
+        dto.setTeacherName(course.getTeacher() != null ? course.getTeacher().getFirstName() + " " + course.getTeacher().getLastName() : null);
         return dto;
     }
 }

@@ -26,15 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService{
         if (optUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        User userDetails =  new User(
+        return new User(
                 optUser.get().getUsername(),
                 optUser.get().getPassword(),
                 Arrays.stream(optUser.get().getRole().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList())
         );
-        System.out.println("loadUserByUsername: " + userDetails.toString());
-        return userDetails;
     }
 
 }

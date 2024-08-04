@@ -33,6 +33,16 @@
                         <p>Username or password invalid!</p>
                     </div>
                 </div>
+                <!-- For registration error -->
+                <div th:if="${registrationError}" class="callout callout-danger bg-red">
+                    <p th:text="${registrationError}"></p>
+                </div>
+
+                <!-- For registration success -->
+                <div th:if="${registrationSuccess}" class="callout callout-success bg-green">
+                    <p th:text="${registrationSuccess}"></p>
+                </div>
+
                 <div class="input-group mb-3">
                     <input type="text" name="username" class="form-control" placeholder="Username" required>
                     <div class="input-group-append">
@@ -65,16 +75,13 @@
                         <input type="text" name="address" class="form-control" placeholder="Address">
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" name="birthDate" class="form-control" placeholder="Birth Date">
+                        <input type="date" name="birthDate" class="form-control" placeholder="Birth Date">
                     </div>
                     <div class="input-group mb-3">
                         <select name="role" class="form-control">
                             <option value="STUDENT">Student</option>
                             <option value="TEACHER">Teacher</option>
                         </select>
-                    </div>
-                    <div class="input-group mb-3" id="hiredDateField" style="display: none;">
-                        <input type="text" name="hiredDate" class="form-control" placeholder="Hired Date">
                     </div>
                 </div>
 
@@ -111,6 +118,7 @@
             $('#additionalFields').show();
             $('#formTitle').text('Register to start your session');
             $('#authForm').attr('action', '/register');
+            $('.callout').hide();
         });
 
         // Handle dynamic form field updates based on role selection

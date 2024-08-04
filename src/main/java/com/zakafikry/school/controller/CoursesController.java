@@ -19,15 +19,4 @@ public class CoursesController {
         model.addAttribute("currentPath", request.getRequestURI());
         return "courses/index";
     }
-
-//    @PostMapping("")
-//    public String post(@RequestBody CourseDto courseDto, Model model) {
-//        System.out.println("POST COURSE");
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        courseDto.setUsername(username);
-//        coursesService.registerCourse(courseDto);
-//        model.addAttribute("message", "Course created successfully");
-//        return "redirect:/course";  // Redirect to the course list page
-//    }
 }

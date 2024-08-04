@@ -5,15 +5,15 @@ import com.zakafikry.school.datatable.Specifications;
 import com.zakafikry.school.dto.DataTablesInput;
 import com.zakafikry.school.dto.DataTablesOutput;
 import com.zakafikry.school.entity.Courses;
+import com.zakafikry.school.repository.CoursesRepository;
 import com.zakafikry.school.service.CoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/course")
@@ -22,10 +22,24 @@ public class CoursesRestController {
     @Autowired
     private CoursesService courseService;
 
+    @Autowired
+    private CoursesRepository coursesRepository;
+
+    @GetMapping("/{courseId}")
+    public ResponseEntity<?> getCourseDetails(@PathVariable Long courseId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Courses> c = coursesRepository.findById(courseId);
+
+        if (c.isPresent()) {
+            CourseDTO dto = courseService.convertToDTO(c.get());
+            return ResponseEntity.ok().body(dto);
+        } else {
+            return ResponseEntity.badRequest().body("Course not found");
+        }
+    }
+
     @PostMapping("")
     public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDto) {
-        System.out.println("POST COURSE : " + courseDto.toString());
-
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         courseDto.setUsername(username);
 
@@ -38,8 +52,10 @@ public class CoursesRestController {
     }
 
     @PostMapping("/datatable")
-    public DataTablesOutput<CourseDTO> getCoursesForDataTable(@RequestBody DataTablesInput input) {
+    public DataTablesOutput<CourseDTO> dataTableCourses(@RequestBody DataTablesInput input) {
         Specification<Courses> spec = Specifications.courseWithSearch(input.getSearchValue());
-        return courseService.getCoursesForDataTable(input, spec);
+        return courseService.getCoursesDataTable(input, spec);
     }
+
+
 }
