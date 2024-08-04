@@ -2614,22 +2614,31 @@ fieldset:disabled a.btn {
 
 .btn-secondary {
   color: #ffffff;
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #28a745;
+  border-color: #28a745;
   box-shadow: none;
 }
 
+/* Hover state */
 .btn-secondary:hover {
   color: #ffffff;
-  background-color: #5a6268;
-  border-color: #545b62;
+  background-color: #218838;
+  border-color: #1e7e34;
 }
 
+/* Active state */
+.btn-secondary:active, .btn-secondary.active {
+  color: #ffffff;
+  background-color: #1e7e34;
+  border-color: #1c7430;
+}
+
+/* Focus state */
 .btn-secondary:focus, .btn-secondary.focus {
   color: #ffffff;
-  background-color: #5a6268;
-  border-color: #545b62;
-  box-shadow: none, 0 0 0 0 rgba(130, 138, 145, 0.5);
+  background-color: #218838;
+  border-color: #1e7e34;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
 }
 
 .btn-secondary.disabled, .btn-secondary:disabled {

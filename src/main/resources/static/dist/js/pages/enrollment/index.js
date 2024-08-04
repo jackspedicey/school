@@ -48,6 +48,23 @@ const loadDataTable = () => {
     });
 };
 
+
+const stringifyLevel = (level) => {
+    switch (level) {
+        case "1":
+        case 1:
+            return 'Beginner';
+        case "2":
+        case 2:
+            return 'Intermediate';
+        case "3":
+        case 3:
+            return 'Expert';
+        default:
+            return 'Unknown';
+    }
+};
+
 const showCourseDetails = (courseId) => {
     $.ajax({
         url: '/api/course/' + courseId,
@@ -56,7 +73,7 @@ const showCourseDetails = (courseId) => {
             let detailsHtml = `
                 <h5>${data.name}</h5>
                 <p><strong>Description:</strong> ${data.description}</p>
-                <p><strong>Level:</strong> ${data.level}</p>
+                <p><strong>Level:</strong> ${stringifyLevel(data.level)}</p>
                 <p><strong>Schedule:</strong> ${data.schedule}</p>
                 <p><strong>Lecturer:</strong> ${data.teacherName}</p>
             `;

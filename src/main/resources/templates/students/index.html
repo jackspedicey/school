@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout}">
 <head>
-    <title>Free School | Course</title>
+    <title>Free School | Student</title>
     <!-- jQuery -->
     <script th:src="@{plugins/jquery/jquery.min.js}"></script>
     <!-- DataTables -->
@@ -34,39 +34,39 @@
             <div class="col-12">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Filter a Course</h3>
+                        <h3 class="card-title">Student Detail</h3>
                     </div>
                     <div class="card-body">
-                        <form id="courseForm" onsubmit="filterCourse()">
+                        <form id="studentForm" onsubmit="return false;">
                             <div class="row">
                                 <div class="col-md-6">
+                                    <input type="hidden" id="studentId" name="studentId" th:value="${student.id}">
                                     <div class="form-group">
-                                        <label for="courseName">Course Name</label>
-                                        <input type="text" maxlength="16" class="form-control" id="courseName" name="courseName" placeholder="Course Name" required>
+                                        <label for="firstName">First Name</label>
+                                        <input th:value="${student.firstName}" type="text" maxlength="100" class="form-control" id="firstName" name="firstName" placeholder="First Name" disabled>
                                     </div>
                                     <div class="form-group">
-                                        <label for="courseLevel">Course Level</label>
-                                        <select id="courseLevel" name="courseLevel" class="form-control" required>
-                                            <option value="">Select a level</option>
-                                            <option value="1">Beginner</option>
-                                            <option value="2">Intermediate</option>
-                                            <option value="3">Expert</option>
-                                        </select>
+                                        <label for="lastName">Last Name</label>
+                                        <input th:value="${student.lastName}" type="text" maxlength="100" class="form-control" id="lastName" name="lastName" placeholder="Last Name" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input th:value="${student.email}" type="email" maxlength="100" class="form-control" id="email" name="email" placeholder="Email" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="courseDesc">Course Description</label>
-                                        <input type="text" class="form-control" id="courseDesc" name="courseDesc" placeholder="Course Description" required>
+                                        <label for="address">Address</label>
+                                        <input th:value="${student.address}" type="text" maxlength="100" class="form-control" id="address" name="address" placeholder="Address" disabled>
                                     </div>
                                     <div class="form-group">
-                                        <label for="schedule">Schedule</label>
-                                        <input type="text" maxlength="16" class="form-control" id="schedule" name="schedule" placeholder="Schedule" required>
+                                        <label for="birthdate">Birthdate</label>
+                                        <input th:value="${student.birthDate}" type="date" class="form-control" id="birthdate" name="birthdate" placeholder="birthdate" disabled>
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="margin: 2px">Filter</button>
-                            <button type="reset" class="btn btn-warning" style="margin: 2px">Clear</button>
+                            <button type="submit" id="saveButton" class="btn btn-primary" style="margin: 2px; display: none;" onclick="saveEdit()">Save</button>
+                            <button type="button" id="editButton" class="btn btn-warning" style="margin: 2px" onclick="enableEdit()">Edit</button>
                         </form>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                 <div class="modal-body">
                     <!--gonna fill this space-->
                     <div id="course-details"></div>
-                    <button id="enroll-button" class="btn btn-primary mt-3">Enroll</button>
+                    <button id="unroll-button" class="btn btn-primary mt-3">Leave Course</button>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

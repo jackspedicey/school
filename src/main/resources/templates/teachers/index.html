@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout}">
 <head>
-    <title>Free School | Teacher Management</title>
+    <title>Free School | Scholar's Tome </title>
     <!-- jQuery -->
     <script th:src="@{plugins/jquery/jquery.min.js}"></script>
     <!-- DataTables -->
@@ -16,12 +16,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Document Delivery</h1>
+                <h1 class="m-0 text-dark">Teacher</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item active">Document Delivery</li>
+                    <li class="breadcrumb-item active">Teacher</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -32,101 +32,51 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Teacher Detail</h3>
+                    </div>
                     <div class="card-body">
-                        <div class="alert alert-warning" role="alert" th:if="${message} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong  th:text="${message}"></strong>
-                        </div>
-                        <div class="alert alert-danger" role="alert" th:if="${error} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="alert-heading">ERROR!</h4>
-                            <p th:each="err : ${error}" th:text="${err}"></p>
-                            <hr>
-                            <p class="mb-0">Please Read the Error Message :).</p> 
-                        </div>
-                        <div class="alert alert-success" role="alert" th:if="${success} != null">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong  th:text="${success}"></strong>
-                        </div>
-                        <form action="/delivery/upload" method="post" enctype="multipart/form-data" id="formUpload">
-                            <label for="uploadFile">Upload File. <a href="/delivery/download/format" target="_blank">Download Format</a></label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <label class="custom-file-label" for="uploadFile">Choose file</label>
-                                    <input type="file" name="uploadFile" class="custom-file-input" id="uploadFile"/>
+                        <form id="teacherForm" onsubmit="return false;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="hidden" id="teacherId" name="teacherId" th:value="${teacher.id}">
+                                    <div class="form-group">
+                                        <label for="firstName">First Name</label>
+                                        <input th:value="${teacher.firstName}" type="text" maxlength="100" class="form-control" id="firstName" name="firstName" placeholder="First Name" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">Last Name</label>
+                                        <input th:value="${teacher.lastName}" type="text" maxlength="100" class="form-control" id="lastName" name="lastName" placeholder="Last Name" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input th:value="${teacher.email}" type="email" maxlength="100" class="form-control" id="email" name="email" placeholder="Email" disabled>
+                                    </div>
                                 </div>
-                                <div class="input-group-append">
-                                    <button id="submitUpload" type="submit" class="input-group-text primary">Upload</button>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input th:value="${teacher.address}" type="text" maxlength="100" class="form-control" id="address" name="address" placeholder="Address" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="birthdate">Birthdate</label>
+                                        <input th:value="${teacher.birthDate}" type="date" class="form-control" id="birthdate" name="birthdate" placeholder="birthdate" disabled>
+                                    </div>
                                 </div>
                             </div>
+                            <button type="submit" id="saveButton" class="btn btn-primary" style="margin: 2px; display: none;" onclick="saveEdit()">Save</button>
+                            <button type="button" id="editButton" class="btn btn-warning" style="margin: 2px" onclick="enableEdit()">Edit</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Filter</h3>
+                        <h3 class="card-title">Created Course</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="resiNo">No Resi</label>
-                                    <input type="text" maxlength="16" class="form-control" id="resiNo" placeholder="No Resi">
-                                </div>
-                                <div class="form-group">
-                                    <label for="agentId">Agent Code</label>
-                                    <input type="text" class="form-control" id="agentId" placeholder="Agent Code">
-                                </div>
-                                <div class="form-group">
-                                    <label for="docType">Doc Type</label>
-                                    <input type="text" class="form-control" id="docType" placeholder="Doc Type">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="policyNumber">No Polis</label>
-                                    <input type="text" class="form-control" id="policyNumber" placeholder="No Polis">
-                                </div>
-                                <div class="form-group">
-                                    <label for="expedition">Kurir</label>
-                                    <input type="text" class="form-control" id="expedition" placeholder="Kurir">
-                                </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <input type="text" class="form-control" id="status" placeholder="Status">
-                                </div>
-                                <!-- <div class="row">
-                                    <div class="col-md-3">
-                                        <label for="uploadFrom">Upload From</label>
-                                        <input type="date" class="form-control" id="uploadFrom">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="uploadTo">Upload To</label>
-                                        <input type="date" class="form-control" id="uploadTo">
-                                    </div>
-                                </div> -->
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" style="margin: 2px" onclick="filter()">Find</button>
-                        <button class="btn btn-warning" style="margin: 2px" onclick="resetField()">Clear</button>
-                        <!-- <button class="btn btn-dark" style="margin: 2px" onclick="exportExcel()">Download</button> -->
-                    </div>
-                </div>
-
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Uploaded Record</h3>
-                    </div>
-                    <div class="card-body">
-                        <table id="dt-policy" class="table table-striped"></table>
+                        <table id="dt-teacher" class="table table-striped"></table>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -137,17 +87,19 @@
         <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
-    <div class="modal fade" id="modal-detail-client">
-        <div class="modal-dialog" style="min-width: 80%">
+    <div class="modal fade" id="modal-course-detail">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Detail</h4>
+                    <h4 class="modal-title">Course  Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <!--gonna fill this space-->
+                    <div id="course-details"></div>
+                    <button id="unroll-button" class="btn btn-primary mt-3">Leave Course</button>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

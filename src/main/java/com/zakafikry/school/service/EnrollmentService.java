@@ -43,6 +43,7 @@ public class EnrollmentService {
             enrollment.setEnrolledDate(new Date());
             enrollment.setStudent(student);
             enrollment.setCourse(course);
+            enrollment.setName(course.getName() +" for " + student.getName());
             enrollmentRepository.save(enrollment);
         }
     }
@@ -65,6 +66,7 @@ public class EnrollmentService {
 
     public EnrollmentDTO convertToDTO(Enrollment enrollment) {
         EnrollmentDTO dto = new EnrollmentDTO();
+        dto.setEnrollmentId(String.valueOf(enrollment.getId()));
         dto.setCourseName(enrollment.getCourse().getName());
         dto.setCourseDesc(enrollment.getCourse().getDescription());
         dto.setCourseLevel(enrollment.getCourse().getLevel());

@@ -27,7 +27,6 @@ public class CoursesRestController {
 
     @GetMapping("/{courseId}")
     public ResponseEntity<?> getCourseDetails(@PathVariable Long courseId) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Courses> c = coursesRepository.findById(courseId);
 
         if (c.isPresent()) {
@@ -57,5 +56,10 @@ public class CoursesRestController {
         return courseService.getCoursesDataTable(input, spec);
     }
 
+    @PostMapping("/datatable/{teacherId}")
+    public DataTablesOutput<CourseDTO> getCourseDataTable(@PathVariable Long teacherId, @RequestBody DataTablesInput request) {
+        Specification<Courses> spec = Specifications.courseWithSearchAndTeacher(request.getSearchValue(), teacherId);
+        return courseService.getCoursesDataTable(request, spec);
+    }
 
 }

@@ -7,25 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <link rel="stylesheet" href="dist/css/adminlte.css">
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <style>
         .additional-fields {
-          display: none; /* Hide additional fields by default */
+            display: none;
         }
     </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <img src="dist/img/logo.png" alt="FWD Logo" style="width: 50%; height: auto;">
+        <img th:src="@{/dist/img/logo.png}" alt="FWD Logo" style="width: 50%; height: auto;">
     </div>
     <div class="card">
         <div class="card-body login-card-body">
-            <!-- Login Form -->
             <form id="authForm" th:action="@{/login}" method="POST">
                 <p id="formTitle" class="login-box-msg">Sign in to start your session</p>
                 <div th:if="${param.error}">
@@ -33,12 +32,9 @@
                         <p>Username or password invalid!</p>
                     </div>
                 </div>
-                <!-- For registration error -->
                 <div th:if="${registrationError}" class="callout callout-danger bg-red">
                     <p th:text="${registrationError}"></p>
                 </div>
-
-                <!-- For registration success -->
                 <div th:if="${registrationSuccess}" class="callout callout-success bg-green">
                     <p th:text="${registrationSuccess}"></p>
                 </div>
@@ -60,8 +56,8 @@
                     </div>
                 </div>
 
-                <!-- Additional Registration Fields -->
                 <div id="additionalFields" class="additional-fields">
+                    <!-- Additional fields for registration -->
                     <div class="input-group mb-3">
                         <input type="text" name="firstName" class="form-control" placeholder="First Name">
                     </div>
@@ -87,50 +83,46 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <!-- Optionally add a checkbox for "Remember Me" -->
+                        <button type="button" id="toggleButton" class="btn btn-secondary">Register</button>
                     </div>
                     <div class="col-4">
                         <button type="submit" class="btn btn-primary btn-block">Submit</button>
                     </div>
                 </div>
             </form>
-
-            <!-- Buttons to toggle between login and registration -->
-            <div class="text-center mt-3">
-                <button id="loginButton" class="btn btn-primary">Login</button>
-                <button id="registerButton" class="btn btn-primary">Register</button>
-            </div>
         </div>
     </div>
 </div>
 
-<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+<script th:inline="javascript">
     $(document).ready(function() {
-        $('#loginButton').click(function() {
-            $('#additionalFields').hide();
-            $('#formTitle').text('Sign in to start your session');
-            $('#authForm').attr('action', '/login');
-        });
+        var isLoginMode = true;
 
-        $('#registerButton').click(function() {
-            $('#additionalFields').show();
-            $('#formTitle').text('Register to start your session');
-            $('#authForm').attr('action', '/register');
+        $('#toggleButton').click(function() {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                $('#additionalFields').hide();
+                $('#formTitle').text('Sign in to start your session');
+                $('#authForm').attr('action', /*[[@{/login}]]*/ '/login');
+                $(this).text('Register');
+            } else {
+                $('#additionalFields').show();
+                $('#formTitle').text('Register to start your session');
+                $('#authForm').attr('action', /*[[@{/register}]]*/ '/register');
+                $(this).text('Login');
+            }
             $('.callout').hide();
         });
 
-        // Handle dynamic form field updates based on role selection
         $('select[name="role"]').change(function() {
             if ($(this).val() === 'TEACHER') {
-                $('#hiredDateField').show(); // Show hired date for teachers
+                $('#hiredDateField').show();
             } else {
-                $('#hiredDateField').hide(); // Hide hired date for students
+                $('#hiredDateField').hide();
             }
         });
 
-        // Optional: Handle form validation
         $('#authForm').on('submit', function(event) {
             var username = $('input[name="username"]').val().trim();
             var password = $('input[name="password"]').val().trim();

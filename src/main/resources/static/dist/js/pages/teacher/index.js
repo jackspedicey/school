@@ -1,155 +1,87 @@
-const loadDataTable = query => {
-    $('#dt-policy').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/rest/datatable/upload" + query,
-            "type": "POST",
-            "dataType": "json",
-            "contentType": "application/json",
-            "data": function (d) {
-                return JSON.stringify(d);
+let enrollmentTable;
+
+const loadDataTable = () => {
+    let teacherId = $('#teacherId').val();
+    enrollmentTable = $('#dt-teacher').DataTable({
+        serverSide: true,
+        ajax: {
+            url: '/api/course/datatable/' + teacherId,
+            type: 'POST',
+            contentType: 'application/json',
+            data: function(d) {
+                return JSON.stringify({
+                    draw: d.draw,
+                    start: d.start,
+                    length: d.length,
+                    searchValue: d.search.value,
+                    sortColumn: d.columns[d.order[0].column].data,
+                    sortDirection: d.order[0].dir
+                });
             }
         },
-        "columnDefs": [
-            {"targets": -1,
-            "searchable": false,
-            "orderable": false
-            }
+        columns: [
+            { title: 'Course Name', data: 'name' },
+            { title: 'Description', data: 'description' },
+            {
+                title: 'Level',
+                data: 'courseLevel',
+                render: function(data, type, row) {
+                    switch (data) {
+                        case "1": return 'Beginner';
+                        case "2": return 'Intermediate';
+                        case "3": return 'Expert';
+                        default: return '';
+                    }
+                }
+            },
+            { title: 'Schedule', data: 'schedule' },
+            { title: 'Lecturer', data: 'teacherName' },
         ],
-        "columns": [
-            {"title": "No Polis", "data": "policyNumber"},
-            {"title": "Agent Code", "data": "agentId"},
-            {"title": "Doc Type", "data": "docType"},
-            {"title": "Send Date", "data": "strSendDate"},
-            {"title": "No Resi", "data": "resiNo"},
-            {"title": "Kurir", "data": "expedition"},
-            {"title": "Status", "data": "status"},
-            {"title": "Notes", "data": "notes"},
-            {"title": "Uploader", "data": "createdBy"},
-            {"title": "Upload Date", "data": "strCreatedTime"}
-        ],
-        "responsive": true,
-        "autoWidth": false,
+        responsive: true,
+        autoWidth: false
     });
+};
+
+const enableEdit = () => {
+    $('#teacherForm input').prop('disabled', false);
+    $('#saveButton').show();
+    $('#editButton').hide();
 }
 
-const validation = () => {
-    let uploadFrom = $('#uploadFrom').val();
-    let uploadTo = $('#uploadTo').val();
+const saveEdit = () => {
+    const teacherData = {
+        id: $('#teacherId').val(),
+        firstName: $('#firstName').val(),
+        lastName: $('#lastName').val(),
+        email: $('#email').val(),
+        address: $('#address').val(),
+        birthDate: $('#birthdate').val()
+    };
 
-    if ((uploadFrom && !uploadTo) || (!uploadFrom && uploadTo)) {
-        throw alert('please fill both date')
-    }
-}
+    $.ajax({
+        url: '/teacher/update',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(teacherData),
+        success: function(response) {
+            alert('Successfully edited teacher');
+            window.location.href = '/teacher';
 
-const reloadDatatable = (query) => {
-    validation();
-    $('#dt-policy').DataTable().destroy();
-    loadDataTable(query);
-}
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            alert('Error updating teacher: ' + error);
+        }
+    });
+};
 
-const checkQuery = (query) => {
-    return query.length > 0 ? '&' : '?';
-}
-
-const getQuery = () => {
-    let policyNumber = $('#policyNumber').val();
-    let agentId = $('#agentId').val();
-    let docType = $('#docType').val();
-    let resiNo = $('#resiNo').val();
-    let expedition = $('#expedition').val();
-    let status = $('#status').val();
-    let uploadFrom = $('#uploadFrom').val();
-    let uploadTo = $('#uploadTo').val();
-
-    let query = ''
-
-    if (policyNumber) {
-        query+=checkQuery(query) + "policyNumber="+policyNumber;
-    }
-
-    if (agentId) {
-        query+=checkQuery(query) + "agentId="+agentId;
-    }
-
-    if (docType) {
-        query+=checkQuery(query) + "docType="+docType;
-    }
-
-    if (resiNo) {
-        query+=checkQuery(query) + "resiNo="+resiNo;
-    }
-
-    if (expedition) {
-        query+=checkQuery(query) + "expedition="+expedition;
-    }
-
-    if (uploadFrom) {
-        query+=checkQuery(query) + "from="+uploadFrom;
-    }
-
-    if (uploadTo) {
-        query+=checkQuery(query) + "to="+uploadTo;
-    }
-
-    if (status) {
-        query+=checkQuery(query) + "status="+status;
-    }
-
-    console.log('query: ' + query)
-
-    return query;
-}
-
-const filter = () => {
-    reloadDatatable(getQuery());
-}
-
-const resetField = () => {
-    $('#policyNumber').val("");
-    $('#agentId').val("");
-    $('#docType').val("");
-    $('#resiNo').val("");
-    $('#expedition').val("");
-    $('#uploadFrom').val("");
-    $('#uploadTo').val("");
-    $('#status').val("");
-}
-
-let xlsMimeType = 'data:application/vnd.ms-excel';
-let xlsxMimeType = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-const exportExcel = () => {
-    validation();
-    let query = getQuery();
-    if (query) {
-        $.ajax({
-            url : 'rest/download/excel' + query,
-            type : 'GET',
-            headers: {'Content-Type': 'application/vnd.ms-excel'},
-            responseType: 'arraybuffer',
-            success : function(result) {
-                console.log(result)
-                let data = new Blob([result], { type: 'data:application/vnd.ms-excel' });
-                let url = URL.createObjectURL(data);
-
-                let hiddenElement = document.createElement('a');
-                hiddenElement.href = url;
-                hiddenElement.target = '_blank';
-                hiddenElement.download = "download" + '.xls';
-                hiddenElement.click();
-            }
-        });
-    } else {
-        alert('please filter before download')
-    }
+const disableEdit = () => {
+    $('#teacherForm input').prop('disabled', true);
+    $('#saveButton').hide();
+    $('#editButton').show();
 }
 
 $(document).ready(function () {
-    loadDataTable('');
-    $('#uploadFile').on("change",function() {
-        const name = $('#uploadFile')[0].files[0].name;
-        $(this).prev('label').text(name);
-    });
+    loadDataTable();
+    disableEdit();
 });

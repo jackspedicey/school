@@ -6,7 +6,11 @@ import com.zakafikry.school.entity.Students;
 import com.zakafikry.school.entity.Teachers;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Specifications {
     public static Specification<Courses> courseWithSearch(String search) {
@@ -26,6 +30,37 @@ public class Specifications {
                     builder.like(builder.lower(teacherJoin.get("lastName")), likePattern),
                     builder.like(builder.lower(teacherJoin.get("firstName")), likePattern)
             );
+        };
+    }
+
+    public static Specification<Courses> courseWithSearchAndTeacher(String search, Long teacherId) {
+        return (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Teacher ID filter
+            if (teacherId != null) {
+                Join<Courses, Teachers> teacherJoin = root.join("teacher", JoinType.INNER);
+                predicates.add(builder.equal(teacherJoin.get("id"), teacherId));
+            }
+
+            // Search filter
+            if (search != null && !search.isEmpty()) {
+                String likePattern = "%" + search.toLowerCase() + "%";
+
+                Join<Courses, Teachers> teacherJoin = root.join("teacher", JoinType.LEFT);
+
+                Predicate searchPredicate = builder.or(
+                        builder.like(builder.lower(root.get("name")), likePattern),
+                        builder.like(builder.lower(root.get("description")), likePattern),
+                        builder.like(builder.lower(root.get("level")), likePattern),
+                        builder.like(builder.lower(root.get("schedule")), likePattern),
+                        builder.like(builder.lower(teacherJoin.get("lastName")), likePattern),
+                        builder.like(builder.lower(teacherJoin.get("firstName")), likePattern)
+                );
+                predicates.add(searchPredicate);
+            }
+
+            return builder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
